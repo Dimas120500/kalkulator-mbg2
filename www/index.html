@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBG Pro • Driver App</title>
+
+<style>
+/* ===== RESET & VARIABLES ===== */
+:root {
+    --primary: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary: #06d6a0;
+    --danger: #ef476f;
+    --warning: #ffd166;
+    --dark: #1e293b;
+    --light: #f8fafc;
+    --gray: #94a3b8;
+    --gradient: linear-gradient(135deg, #4361ee, #06d6a0);
+    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path d="M10,50 Q30,30 50,50 T90,50" stroke="white" fill="none" stroke-width="2"/><circle cx="20" cy="40" r="3" fill="white"/><circle cx="80" cy="60" r="3" fill="white"/></svg>') repeat;
+    pointer-events: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== HEADER ===== */
+.app-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.app-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.app-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--gradient);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: var(--shadow-md);
+}
+
+.app-title h1 {
+    font-size: 28px;
+    font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.app-subtitle {
+    color: var(--gray);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+/* ===== STATS CARD ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== TAB NAVIGATION ===== */
+.tab-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+.tab {
+    flex: 1;
+    padding: 12px 20px;
+    text-align: center;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab i {
+    font-size: 18px;
+}
+
+.tab.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===== INPUT SECTION ===== */
+.input-section {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-lg);
+    animation: fadeUp 0.4s ease;
+}
+
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 6px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    transition: all 0.3s;
+    background: #f8fafc;
+}
+
+.input-field:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    background: white;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* ===== BUTTONS ===== */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: var(--gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: var(--dark);
+}
+
+.btn-purple {
+    background: #8b5cf6;
+    color: white;
+}
+
+/* ===== CARDS ===== */
+.school-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    animation: fadeUp 0.4s ease;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.school-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--gradient);
+}
+
+.school-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+.school-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.school-checkbox {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.school-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--dark);
+    flex: 1;
+}
+
+.school-badge {
+    background: var(--gradient);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.portion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.portion-card {
+    background: #f8fafc;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.portion-title {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 8px;
+}
+
+.portion-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.portion-detail {
+    font-size: 13px;
+    color: var(--dark);
+    background: white;
+    padding: 4px 8px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+.btn-icon {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-icon.edit {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.btn-icon.delete {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-icon:hover {
+    transform: scale(1.05);
+}
+
+/* ===== TOTAL BOX ===== */
+.total-section {
+    background: var(--gradient);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 24px;
+    color: white;
+    box-shadow: var(--shadow-lg);
+    animation: fadeUp 0.4s ease;
+}
+
+.total-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    opacity: 0.9;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.total-row:last-child {
+    border-bottom: none;
+}
+
+.total-label {
+    font-size: 16px;
+}
+
+.total-value {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.total-detail {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* ===== CATATAN SECTION ===== */
+.note-section {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 24px;
+}
+
+.note-card {
+    background: #fff9e6;
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--warning);
+    position: relative;
+    transition: all 0.3s;
+}
+
+.note-card:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+}
+
+.note-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 8px;
+}
+
+.note-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 12px;
+}
+
+.note-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.note-content {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    white-space: pre-wrap;
+}
+
+/* ===== TOAST ===== */
+.toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 16px 24px;
+    border-radius: 50px;
+    color: white;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s;
+    z-index: 9999;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #ef476f, #dc2626);
+}
+
+.toast.info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* ===== POPUP WELCOME ===== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.popup-content {
+    background: white;
+    border-radius: 32px;
+    padding: 32px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    animation: slideUp 0.4s ease;
+    box-shadow: var(--shadow-lg);
+}
+
+.popup-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 40px;
+    color: white;
+}
+
+.popup-title {
+    font-size: 28px;
+    font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+}
+
+.popup-message {
+    color: #64748b;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.popup-features {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.popup-features p {
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #334155;
+}
+
+.popup-check {
+    width: 24px;
+    height: 24px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .input-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .app-title h1 {
+        font-size: 24px;
+    }
+    
+    .toast {
+        left: 20px;
+        right: 20px;
+        width: auto;
+    }
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- Header -->
+    <div class="app-header">
+        <div class="app-title">
+            <div class="app-icon">🚛</div>
+            <div>
+                <h1>MBG Driver Pro</h1>
+                <div class="app-subtitle">Kalkulator & Catatan Pintar</div>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSekolah">0</div>
+                <div class="stat-label">Total Sekolah</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalIkat">0</div>
+                <div class="stat-label">Total Ikat</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalOmpreng">0</div>
+                <div class="stat-label">Total Ompreng</div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tab-container">
+            <div class="tab active" onclick="switchTab('kalkulator')">
+                <span>🧮</span> Kalkulator
+            </div>
+            <div class="tab" onclick="switchTab('catatan')">
+                <span>📝</span> Catatan
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tab Kalkulator -->
+    <div id="tab-kalkulator" class="tab-content active">
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="input-group">
+                <label class="input-label">Nama Sekolah</label>
+                <input type="text" id="sekolah" class="input-field" placeholder="Contoh: SDN 01 Atu Lintang">
+            </div>
+            
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">Porsi Besar</label>
+                    <input type="number" id="besar" class="input-field" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Porsi Kecil</label>
+                    <input type="number" id="kecil" class="input-field" placeholder="0">
+                </div>
+            </div>
+            
+            <div class="button-grid">
+                <button class="btn btn-primary" onclick="tambahData()">
+                    <span>💾</span> Simpan Data
+                </button>
+                <button class="btn btn-success" onclick="hitungTerpilih()">
+                    <span>✅</span> Hitung Dipilih
+                </button>
+                <button class="btn btn-danger" onclick="hapusSemua()">
+                    <span>🗑️</span> Hapus Semua
+                </button>
+                <button class="btn btn-purple" onclick="exportData()">
+                    <span>📥</span> Download
+                </button>
+            </div>
+        </div>
+        
+        <!-- List Data -->
+        <div id="listData"></div>
+        
+        <!-- Total Boxes -->
+        <div class="total-section" id="totalBox"></div>
+        <div class="total-section" id="selectedBox" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); margin-top: 16px;"></div>
+    </div>
+    
+    <!-- Tab Catatan -->
+    <div id="tab-catatan" class="tab-content">
+        <div class="input-section">
+            <h3 style="margin-bottom: 20px; color: var(--dark);">📝 Tambah Catatan Baru</h3>
+            
+            <div class="input-group">
+                <label class="input-label">Judul Catatan</label>
+                <input type="text" id="judulCatatan" class="input-field" placeholder="Contoh: Catatan Pengiriman">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Isi Catatan</label>
+                <textarea id="isiCatatan" class="input-field" rows="4" placeholder="Tulis catatan Anda di sini..."></textarea>
+            </div>
+            
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">Kategori</label>
+                    <input type="text" id="kategoriCatatan" class="input-field" placeholder="Umum">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Tanggal</label>
+                    <input type="date" id="tanggalCatatan" class="input-field">
+                </div>
+            </div>
+            
+            <button class="btn btn-warning" onclick="simpanCatatan()" style="width: 100%; margin-top: 10px;">
+                <span>💾</span> Simpan Catatan
+            </button>
+        </div>
+        
+        <div id="listCatatan"></div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        Developed with <span style="color: #ff6b6b;">❤️</span> by <strong>dimsz</strong> • Versi 2.0 Premium
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<!-- Popup Welcome -->
+<div id="welcomePopup" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-icon">🚀</div>
+        <h2 class="popup-title">Selamat Datang!</h2>
+        <p class="popup-message">Terima kasih telah menggunakan MBG Driver Pro. Aplikasi ini siap membantu pekerjaan Anda!</p>
+        
+        <div class="popup-features">
+            <p><span class="popup-check">✓</span> Kalkulator porsi sekolah otomatis</p>
+            <p><span class="popup-check">✓</span> Sistem catatan terintegrasi</p>
+            <p><span class="popup-check">✓</span> Data tersimpan permanen</p>
+            <p><span class="popup-check">✓</span> Desain modern & responsif</p>
+            <p><span class="popup-check">✓</span> Export data ke file</p>
+        </div>
+        
+        <button class="btn btn-primary" onclick="tutupWelcomePopup()" style="width: 100%;">Mulai Sekarang</button>
+        <button class="btn" onclick="janganTampilkanLagi()" style="width: 100%; margin-top: 10px; background: #e2e8f0; color: #475569;">Jangan tampilkan lagi</button>
+    </div>
+</div>
+
+<script>
+const isi_per_ikat = 5;
+let data = JSON.parse(localStorage.getItem("mbgData")) || [];
+let catatan = JSON.parse(localStorage.getItem("mbgCatatan")) || [];
+let editIndex = -1;
+let editCatatanIndex = -1;
+
+// Cek first time visit
+window.onload = function() {
+    let firstTime = localStorage.getItem("firstTimeVisit");
+    if(!firstTime) {
+        document.getElementById("welcomePopup").style.display = "flex";
+        localStorage.setItem("firstTimeVisit", "false");
+    }
+    
+    tampilkan();
+    tampilkanCatatan();
+    updateStats();
+}
+
+// Toast
+function toast(msg, type) {
+    let t = document.getElementById("toast");
+    t.className = "toast show " + type;
+    t.innerHTML = `<span class="loading" style="display: none;"></span> ${msg}`;
+    setTimeout(() => t.className = "toast", 3000);
+}
+
+// Popup functions
+function tutupWelcomePopup() {
+    document.getElementById("welcomePopup").style.display = "none";
+    toast("Selamat bekerja! 🎉", "success");
+}
+
+function janganTampilkanLagi() {
+    localStorage.setItem("firstTimeVisit", "selamanya");
+    document.getElementById("welcomePopup").style.display = "none";
+    toast("Popup tidak akan muncul lagi", "info");
+}
+
+// Switch tab
+function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    if(tab === 'kalkulator') {
+        document.querySelectorAll('.tab')[0].classList.add('active');
+        document.getElementById('tab-kalkulator').classList.add('active');
+    } else {
+        document.querySelectorAll('.tab')[1].classList.add('active');
+        document.getElementById('tab-catatan').classList.add('active');
+        tampilkanCatatan();
+    }
+}
+
+// Detail converter
+function detail(n) {
+    return {
+        ikat: Math.floor(n / isi_per_ikat),
+        sisa: n % isi_per_ikat
+    };
+}
+
+// Update stats
+function updateStats() {
+    let totalSekolah = data.length;
+    let totalB = 0, totalK = 0;
+    
+    data.forEach(item => {
+        totalB += item.besar;
+        totalK += item.kecil;
+    });
+    
+    let totalOmpreng = totalB + totalK;
+    let totalIkat = Math.floor(totalOmpreng / isi_per_ikat);
+    
+    document.getElementById('totalSekolah').textContent = totalSekolah;
+    document.getElementById('totalIkat').textContent = totalIkat;
+    document.getElementById('totalOmpreng').textContent = totalOmpreng;
+}
+
+// Tambah data
+function tambahData() {
+    let sekolah = document.getElementById("sekolah").value.trim();
+    let besar = parseInt(document.getElementById("besar").value) || 0;
+    let kecil = parseInt(document.getElementById("kecil").value) || 0;
+    
+    if(!sekolah) return toast("Nama sekolah wajib diisi!", "error");
+    if(besar === 0 && kecil === 0) return toast("Minimal satu porsi harus diisi!", "error");
+    
+    if(editIndex >= 0) {
+        data[editIndex] = { sekolah, besar, kecil };
+        toast("Data berhasil diedit", "info");
+        editIndex = -1;
+    } else {
+        data.push({ sekolah, besar, kecil });
+        toast("Data berhasil disimpan", "success");
+    }
+    
+    localStorage.setItem("mbgData", JSON.stringify(data));
+    resetInput();
+    tampilkan();
+    updateStats();
+}
+
+// Tampilkan data
+function tampilkan() {
+    let list = document.getElementById("listData");
+    if(!list) return;
+    
+    list.innerHTML = "";
+    let totalB = 0, totalK = 0;
+    
+    data.forEach((item, i) => {
+        totalB += item.besar;
+        totalK += item.kecil;
+        let dB = detail(item.besar);
+        let dK = detail(item.kecil);
+        
+        list.innerHTML += `
+        <div class="school-card">
+            <div class="school-header">
+                <input type="checkbox" class="school-checkbox pilih" data-index="${i}">
+                <span class="school-name">${item.sekolah}</span>
+                <span class="school-badge">#${i+1}</span>
+            </div>
+            
+            <div class="portion-grid">
+                <div class="portion-card">
+                    <div class="portion-title">Porsi Besar</div>
+                    <div class="portion-number">${item.besar}</div>
+                    <div class="portion-detail">${dB.ikat} ikat | ${dB.sisa} ompreng</div>
+                </div>
+                <div class="portion-card">
+                    <div class="portion-title">Porsi Kecil</div>
+                    <div class="portion-number">${item.kecil}</div>
+                    <div class="portion-detail">${dK.ikat} ikat | ${dK.sisa} ompreng</div>
+                </div>
+            </div>
+            
+            <div class="card-actions">
+                <button class="btn-icon edit" onclick="editData(${i})">
+                    <span>✏️</span> Edit
+                </button>
+                <button class="btn-icon delete" onclick="hapusData(${i})">
+                    <span>🗑️</span> Hapus
+                </button>
+            </div>
+        </div>`;
+    });
+    
+    let dTB = detail(totalB);
+    let dTK = detail(totalK);
+    
+    document.getElementById("totalBox").innerHTML = `
+        <div class="total-title">📊 TOTAL SEMUA SEKOLAH</div>
+        <div class="total-row">
+            <span class="total-label">Porsi Besar</span>
+            <span class="total-value">${totalB}</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Porsi Kecil</span>
+            <span class="total-value">${totalK}</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Detail Besar</span>
+            <span class="total-detail">${dTB.ikat} ikat | ${dTB.sisa} ompreng</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Detail Kecil</span>
+            <span class="total-detail">${dTK.ikat} ikat | ${dTK.sisa} ompreng</span>
+        </div>
+    `;
+}
+
+// Hitung terpilih
+function hitungTerpilih() {
+    let check = document.querySelectorAll(".pilih:checked");
+    if(check.length == 0) return toast("Tidak ada sekolah dipilih", "error");
+    
+    let totalB = 0, totalK = 0;
+    let namaSekolah = [];
+    
+    check.forEach(c => {
+        let i = c.dataset.index;
+        totalB += data[i].besar;
+        totalK += data[i].kecil;
+        namaSekolah.push(data[i].sekolah);
+    });
+    
+    let dB = detail(totalB);
+    let dK = detail(totalK);
+    
+    document.getElementById("selectedBox").innerHTML = `
+        <div class="total-title">✅ TOTAL TERPILIH (${check.length} sekolah)</div>
+        <div class="total-row">
+            <span class="total-label">Porsi Besar</span>
+            <span class="total-value">${totalB}</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Porsi Kecil</span>
+            <span class="total-value">${totalK}</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Detail Besar</span>
+            <span class="total-detail">${dB.ikat} ikat | ${dB.sisa} ompreng</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Detail Kecil</span>
+            <span class="total-detail">${dK.ikat} ikat | ${dK.sisa} ompreng</span>
+        </div>
+    `;
+    
+    toast(`${check.length} sekolah terpilih`, "success");
+}
+
+// Hapus data
+function hapusData(i) {
+    if(confirm("Yakin mau hapus sekolah ini?")) {
+        data.splice(i, 1);
+        localStorage.setItem("mbgData", JSON.stringify(data));
+        tampilkan();
+        updateStats();
+        toast("Data berhasil dihapus", "error");
+    }
+}
+
+function hapusSemua() {
+    if(confirm("Yakin mau hapus SEMUA data?")) {
+        data = [];
+        localStorage.removeItem("mbgData");
+        tampilkan();
+        updateStats();
+        document.getElementById("selectedBox").innerHTML = "";
+        toast("Semua data dihapus", "error");
+    }
+}
+
+function editData(i) {
+    let item = data[i];
+    document.getElementById("sekolah").value = item.sekolah;
+    document.getElementById("besar").value = item.besar;
+    document.getElementById("kecil").value = item.kecil;
+    editIndex = i;
+    toast("Mode edit aktif", "info");
+}
+
+function resetInput() {
+    document.getElementById("sekolah").value = "";
+    document.getElementById("besar").value = "";
+    document.getElementById("kecil").value = "";
+}
+
+// Export data
+function exportData() {
+    if(data.length === 0 && catatan.length === 0) return toast("Tidak ada data untuk di export", "error");
+    
+    let teks = "🚛 LAPORAN MBG DRIVER PRO 🚛\n";
+    teks += "=".repeat(40) + "\n\n";
+    teks += `Tanggal: ${new Date().toLocaleDateString('id-ID')}\n`;
+    teks += `Waktu: ${new Date().toLocaleTimeString('id-ID')}\n\n`;
+    
+    if(data.length > 0) {
+        teks += "📊 DATA KALKULATOR\n";
+        teks += "-".repeat(30) + "\n\n";
+        
+        let totalB = 0, totalK = 0;
+        data.forEach((item, i) => {
+            let dB = detail(item.besar);
+            let dK = detail(item.kecil);
+            totalB += item.besar;
+            totalK += item.kecil;
+            
+            teks += `${i+1}. ${item.sekolah}\n`;
+            teks += `   Besar: ${item.besar} (${dB.ikat} ikat | ${dB.sisa} ompreng)\n`;
+            teks += `   Kecil: ${item.kecil} (${dK.ikat} ikat | ${dK.sisa} ompreng)\n\n`;
+        });
+        
+        let dTB = detail(totalB);
+        let dTK = detail(totalK);
+        
+        teks += "TOTAL KESELURUHAN:\n";
+        teks += `Besar: ${totalB} (${dTB.ikat} ikat | ${dTB.sisa} ompreng)\n`;
+        teks += `Kecil: ${totalK} (${dTK.ikat} ikat | ${dTK.sisa} ompreng)\n\n`;
+    }
+    
+    if(catatan.length > 0) {
+        teks += "📝 CATATAN\n";
+        teks += "-".repeat(30) + "\n\n";
+        
+        catatan.forEach((note, i) => {
+            teks += `${i+1}. ${note.judul || 'Tanpa Judul'}\n`;
+            teks += `   Tanggal: ${note.tanggal || '-'}\n`;
+            teks += `   Kategori: ${note.kategori || 'Umum'}\n`;
+            teks += `   Isi: ${note.isi}\n\n`;
+        });
+    }
+    
+    let blob = new Blob([teks], { type: "text/plain" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `MBG_Report_${new Date().toISOString().slice(0,10)}.txt`;
+    link.click();
+    
+    toast("Data berhasil di download", "success");
+}
+
+// Fungsi Catatan
+function simpanCatatan() {
+    let judul = document.getElementById("judulCatatan").value.trim() || "Catatan Tanpa Judul";
+    let isi = document.getElementById("isiCatatan").value.trim();
+    let kategori = document.getElementById("kategoriCatatan").value.trim() || "Umum";
+    let tanggal = document.getElementById("tanggalCatatan").value;
+    
+    if(!tanggal) {
+        let today = new Date();
+        let dd = String(today.getDate()).padStart(2, '0');
+        let mm = String(today.getMonth() + 1).padStart(2, '0');
+        let yyyy = today.getFullYear();
+        tanggal = `${yyyy}-${mm}-${dd}`;
+    }
+    
+    if(!isi) return toast("Isi catatan tidak boleh kosong!", "error");
+    
+    if(editCatatanIndex >= 0) {
+        catatan[editCatatanIndex] = { judul, isi, kategori, tanggal };
+        toast("Catatan berhasil diedit", "info");
+        editCatatanIndex = -1;
+    } else {
+        catatan.push({ judul, isi, kategori, tanggal });
+        toast("Catatan berhasil disimpan", "success");
+    }
+    
+    localStorage.setItem("mbgCatatan", JSON.stringify(catatan));
+    resetInputCatatan();
+    tampilkanCatatan();
+}
+
+function tampilkanCatatan() {
+    let list = document.getElementById("listCatatan");
+    if(!list) return;
+    
+    if(catatan.length === 0) {
+        list.innerHTML = `
+        <div class="note-section" style="text-align: center;">
+            <p style="color: var(--gray);">Belum ada catatan. Tambahkan catatan baru!</p>
+        </div>`;
+        return;
+    }
+    
+    list.innerHTML = "<div class='note-section'><h3 style='margin-bottom: 20px;'>📚 Daftar Catatan</h3></div>";
+    let catatanTerurut = [...catatan].reverse();
+    
+    catatanTerurut.forEach((item, index) => {
+        let originalIndex = catatan.length - 1 - index;
+        
+        list.innerHTML += `
+        <div class="note-card" style="margin-top: 16px;">
+            <div class="note-title">${item.judul}</div>
+            <div class="note-meta">
+                <span>📅 ${item.tanggal}</span>
+                <span>🏷️ ${item.kategori}</span>
+            </div>
+            <div class="note-content">${item.isi.replace(/\n/g, '<br>')}</div>
+            <div class="card-actions" style="border-top: none; padding-top: 0;">
+                <button class="btn-icon edit" onclick="editCatatan(${originalIndex})">
+                    <span>✏️</span> Edit
+                </button>
+                <button class="btn-icon delete" onclick="hapusCatatan(${originalIndex})">
+                    <span>🗑️</span> Hapus
+                </button>
+            </div>
+        </div>`;
+    });
+}
+
+function editCatatan(index) {
+    let item = catatan[index];
+    document.getElementById("judulCatatan").value = item.judul || '';
+    document.getElementById("isiCatatan").value = item.isi || '';
+    document.getElementById("kategoriCatatan").value = item.kategori || '';
+    document.getElementById("tanggalCatatan").value = item.tanggal || '';
+    
+    editCatatanIndex = index;
+    toast("Mode edit catatan aktif", "info");
+    switchTab('catatan');
+}
+
+function hapusCatatan(index) {
+    if(confirm("Yakin mau hapus catatan ini?")) {
+        catatan.splice(index, 1);
+        localStorage.setItem("mbgCatatan", JSON.stringify(catatan));
+        tampilkanCatatan();
+        toast("Catatan berhasil dihapus", "error");
+    }
+}
+
+function resetInputCatatan() {
+    document.getElementById("judulCatatan").value = "";
+    document.getElementById("isiCatatan").value = "";
+    document.getElementById("kategoriCatatan").value = "";
+    document.getElementById("tanggalCatatan").value = "";
+}
+
+// Shortcut Enter
+document.addEventListener('keypress', function(e) {
+    if(e.key === 'Enter' && document.getElementById('tab-kalkulator').classList.contains('active')) {
+        tambahData();
+    }
+});
+
+// Inisialisasi awal
+tampilkan();
+tampilkanCatatan();
+updateStats();
+</script>
+
+</body>
+</html>
