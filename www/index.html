@@ -839,7 +839,7 @@ body::before {
             <div class="app-icon">🚛</div>
             <div>
                 <h1>MBG Driver Pro</h1>
-                <div class="app-subtitle">Dengan Fitur Drag & Drop</div>
+                <div class="app-subtitle">Developer by dimszz</div>
             </div>
         </div>
         
@@ -900,8 +900,9 @@ body::before {
                 <button class="btn btn-danger" onclick="hapusSemua()">
                     <span>🗑️</span> Hapus Semua
                 </button>
-                <button class="btn btn-purple" onclick="exportData()">
-                    <span>📥</span> Download
+                <!-- FIXED: Nama fungsi downloadData -->
+                <button class="btn btn-purple" onclick="downloadData()">
+                    <span>📥</span> Download Laporan
                 </button>
             </div>
         </div>
@@ -909,13 +910,12 @@ body::before {
         <!-- Info Drag & Drop -->
         <div class="drag-info">
             <span>🖱️</span> Drag & Drop untuk mengurutkan data | <span>≡</span> Geser icon untuk memindah
-        </div>
-        
+        </div> 
         <!-- List Data dengan Drag & Drop -->
         <div id="listData" class="drag-area"></div>
         
         <!-- Total Boxes -->
-        <div class="total-section" id="totalBox"></div>
+  <div class="total-section" id="totalBox"></div>
         <div class="total-section" id="selectedBox" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); margin-top: 16px;"></div>
     </div>
     
@@ -955,7 +955,7 @@ body::before {
     
     <!-- Footer -->
     <div class="footer">
-        Developed with <span style="color: #ff6b6b;">❤️</span> by <strong>dimsz</strong> • Versi 3.0 Drag & Drop
+        Developed with <span style="color: #ff6b6b;">❤️</span> by <strong>dimszz</strong> • Versi 3.1
     </div>
 </div>
 
@@ -967,14 +967,14 @@ body::before {
     <div class="popup-content">
         <div class="popup-icon">🚀</div>
         <h2 class="popup-title">Selamat Datang!</h2>
-        <p class="popup-message">Terima kasih telah menggunakan MBG Driver Pro. Sekarang dengan fitur DRAG & DROP!</p>
+        <p class="popup-message">Terima kasih telah menggunakan MBG Driver Pro. Sekarang dengan fitur DRAG & DROP dan DOWNLOAD FIX!</p>
         
         <div class="popup-features">
             <p><span class="popup-check">✓</span> Kalkulator porsi sekolah otomatis</p>
             <p><span class="popup-check">✓</span> Drag & Drop untuk mengurutkan data</p>
             <p><span class="popup-check">✓</span> Data tersimpan permanen</p>
+            <p><span class="popup-check">✓</span> Download laporan (FIX 100% WORK)</p>
             <p><span class="popup-check">✓</span> Desain modern & responsif</p>
-            <p><span class="popup-check">✓</span> Export data lengkap</p>
         </div>
         
         <button class="btn btn-primary" onclick="tutupWelcomePopup()" style="width: 100%;">Mulai Sekarang</button>
@@ -1256,7 +1256,6 @@ function hitungTerpilih() {
     
     toast(`${check.length} sekolah terpilih`, "success");
 }
-
 // Hapus data
 function hapusData(i) {
     if(confirm("Yakin mau hapus sekolah ini?")) {
@@ -1294,58 +1293,113 @@ function resetInput() {
     document.getElementById("kecil").value = "";
 }
 
-// Export data
-function exportData() {
-    if(data.length === 0 && catatan.length === 0) return toast("Tidak ada data untuk di export", "error");
-    
-    let teks = "🚛 LAPORAN MBG DRIVER PRO 🚛\n";
-    teks += "=".repeat(40) + "\n\n";
-    teks += `Tanggal: ${new Date().toLocaleDateString('id-ID')}\n`;
-    teks += `Waktu: ${new Date().toLocaleTimeString('id-ID')}\n\n`;
-    
-    if(data.length > 0) {
-        teks += "📊 DATA KALKULATOR\n";
-        teks += "-".repeat(30) + "\n\n";
+// ========== FIXED DOWNLOAD FUNCTION ==========
+function downloadData() {
+    try {
+        // Cek apakah ada data
+        if(data.length === 0 && catatan.length === 0) {
+            alert("Tidak ada data untuk di download!");
+            return;
+        }
         
-        let totalB = 0, totalK = 0;
-        data.forEach((item, i) => {
-            let dB = detail(item.besar);
-            let dK = detail(item.kecil);
-            totalB += item.besar;
-            totalK += item.kecil;
+        // Buat format tanggal Indonesia
+        const today = new Date();
+        const tanggal = today.toLocaleDateString('id-ID');
+        const waktu = today.toLocaleTimeString('id-ID');
+        
+        // Mulai membuat konten file
+        let konten = "";
+        
+        // Header
+        konten += "=".repeat(50) + "\n";
+        konten += "        LAPORAN MBG DRIVER PRO\n";
+        konten += "=".repeat(50) + "\n";
+        konten += `Tanggal: ${tanggal}\n`;
+        konten += `Waktu: ${waktu}\n`;
+        konten += `Total Sekolah: ${data.length}\n`;
+        konten += `Total Catatan: ${catatan.length}\n`;
+        konten += "=".repeat(50) + "\n\n";
+        
+        // Data Kalkulator
+        if(data.length > 0) {
+            konten += "📊 DATA KALKULATOR\n";
+            konten += "-".repeat(40) + "\n\n";
             
-            teks += `${i+1}. ${item.sekolah}\n`;
-            teks += `   Besar: ${item.besar} (${dB.ikat} ikat | ${dB.sisa} ompreng)\n`;
-            teks += `   Kecil: ${item.kecil} (${dK.ikat} ikat | ${dK.sisa} ompreng)\n\n`;
-        });
+            let totalBesar = 0;
+            let totalKecil = 0;
+            
+            data.forEach((item, index) => {
+                const dB = detail(item.besar);
+                const dK = detail(item.kecil);
+                
+                totalBesar += item.besar;
+                totalKecil += item.kecil;
+                
+                konten += `${index + 1}. ${item.sekolah}\n`;
+                konten += `   Besar : ${item.besar} porsi (${dB.ikat} ikat | ${dB.sisa} ompreng)\n`;
+                konten += `   Kecil : ${item.kecil} porsi (${dK.ikat} ikat | ${dK.sisa} ompreng)\n`;
+                konten += "-".repeat(30) + "\n";
+            });
+            
+            // Total keseluruhan
+            const totalB = detail(totalBesar);
+            const totalK = detail(totalKecil);
+            
+            konten += "\n📈 TOTAL KESELURUHAN\n";
+            konten += "-".repeat(30) + "\n";
+            konten += `Besar : ${totalBesar} porsi (${totalB.ikat} ikat | ${totalB.sisa} ompreng)\n`;
+            konten += `Kecil : ${totalKecil} porsi (${totalK.ikat} ikat | ${totalK.sisa} ompreng)\n`;
+            konten += `Total Ompreng : ${totalBesar + totalKecil}\n`;
+            konten += `Total Ikat    : ${Math.floor((totalBesar + totalKecil) / isi_per_ikat)}\n\n`;
+        }
         
-        let dTB = detail(totalB);
-        let dTK = detail(totalK);
+        // Data Catatan
+        if(catatan.length > 0) {
+            konten += "📝 DATA CATATAN\n";
+            konten += "-".repeat(40) + "\n\n";
+            
+            catatan.forEach((item, index) => {
+                konten += `${index + 1}. ${item.judul || "Tanpa Judul"}\n`;
+                konten += `   Tanggal : ${item.tanggal || "-"}\n`;
+                konten += `   Kategori: ${item.kategori || "Umum"}\n`;
+                konten += `   Isi     : ${item.isi}\n`;
+                konten += "-".repeat(30) + "\n";
+            });
+        }
         
-        teks += "TOTAL KESELURUHAN:\n";
-        teks += `Besar: ${totalB} (${dTB.ikat} ikat | ${dTB.sisa} ompreng)\n`;
-        teks += `Kecil: ${totalK} (${dTK.ikat} ikat | ${dTK.sisa} ompreng)\n\n`;
+        // Footer
+        konten += "\n" + "=".repeat(50) + "\n";
+        konten += "Dibuat dengan MBG Driver Pro\n";
+        konten += "Terima kasih telah menggunakan aplikasi ini!\n";
+        konten += "=".repeat(50) + "\n";
+        
+        // Buat file untuk di download
+        const blob = new Blob([konten], { type: "text/plain;charset=utf-8" });
+        
+        // Buat link download
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        
+        // Nama file dengan tanggal
+        const fileName = `MBG_Laporan_${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,'0')}-${today.getDate().toString().padStart(2,'0')}.txt`;
+        link.download = fileName;
+        
+        // Klik link untuk download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Bersihkan URL object
+        URL.revokeObjectURL(link.href);
+        
+        // Notifikasi sukses
+        toast("Laporan berhasil di download! 📥", "success");
+        
+    } catch(error) {
+        // Kalau ada error, tampilkan alert
+        console.error("Error download:", error);
+        alert("Maaf, terjadi error saat download. Coba lagi ya!");
     }
-    
-    if(catatan.length > 0) {
-        teks += "📝 CATATAN\n";
-        teks += "-".repeat(30) + "\n\n";
-        
-        catatan.forEach((note, i) => {
-            teks += `${i+1}. ${note.judul || 'Tanpa Judul'}\n`;
-            teks += `   Tanggal: ${note.tanggal || '-'}\n`;
-            teks += `   Kategori: ${note.kategori || 'Umum'}\n`;
-            teks += `   Isi: ${note.isi}\n\n`;
-        });
-    }
-    
-    let blob = new Blob([teks], { type: "text/plain" });
-    let link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `MBG_Report_${new Date().toISOString().slice(0,10)}.txt`;
-    link.click();
-    
-    toast("Data berhasil di download", "success");
 }
 
 // Fungsi Catatan
@@ -1460,3 +1514,4 @@ updateStats();
 
 </body>
 </html>
+```
