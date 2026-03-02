@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MBG Pro • Driver App</title>
+<title>MBG Pro • Drag & Drop</title>
+
+<!-- PENTING: Library untuk drag and drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
 /* ===== RESET & VARIABLES ===== */
@@ -303,12 +306,92 @@ body::before {
     color: white;
 }
 
-/* ===== CARDS ===== */
+/* ===== DRAG AND DROP STYLES ===== */
+.drag-area {
+    min-height: 200px;
+    transition: all 0.2s;
+}
+
+.drag-item {
+    cursor: grab;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+}
+
+.drag-item:active {
+    cursor: grabbing;
+    opacity: 0.9;
+    transform: scale(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Kelas saat sedang di-drag */
+.sortable-ghost {
+    opacity: 0.4;
+    background: #cbd5e1;
+    border: 2px dashed var(--primary);
+    transform: scale(0.98);
+}
+
+.sortable-drag {
+    opacity: 0.8;
+    transform: rotate(2deg);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Handle drag (icon) */
+.drag-handle {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    color: #64748b;
+    font-size: 16px;
+    cursor: grab;
+    transition: all 0.2s;
+}
+
+.drag-handle:hover {
+    background: #cbd5e1;
+    color: var(--primary);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Info drag */
+.drag-info {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.drag-info span {
+    background: white;
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+/* ===== SCHOOL CARDS ===== */
 .school-card {
     background: white;
     border-radius: var(--radius-lg);
     padding: 20px;
-    margin-bottom: 16px;
     box-shadow: var(--shadow-md);
     border: 1px solid rgba(0, 0, 0, 0.05);
     animation: fadeUp 0.4s ease;
@@ -328,7 +411,6 @@ body::before {
 }
 
 .school-card:hover {
-    transform: translateY(-4px) scale(1.02);
     box-shadow: var(--shadow-lg);
 }
 
@@ -360,6 +442,9 @@ body::before {
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .portion-grid {
@@ -452,6 +537,9 @@ body::before {
     font-weight: 600;
     margin-bottom: 16px;
     opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .total-row {
@@ -701,6 +789,12 @@ body::before {
         right: 20px;
         width: auto;
     }
+    
+    .drag-handle {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
 }
 
 /* ===== FOOTER ===== */
@@ -745,7 +839,7 @@ body::before {
             <div class="app-icon">🚛</div>
             <div>
                 <h1>MBG Driver Pro</h1>
-                <div class="app-subtitle">Kalkulator & Catatan Pintar</div>
+                <div class="app-subtitle">Dengan Fitur Drag & Drop</div>
             </div>
         </div>
         
@@ -782,7 +876,7 @@ body::before {
         <div class="input-section">
             <div class="input-group">
                 <label class="input-label">Nama Sekolah</label>
-                <input type="text" id="sekolah" class="input-field" placeholder="Contoh: SDN 01 Atu Lintang">
+                <input type="text" id="sekolah" class="input-field" placeholder="Contoh: SDN 01 Jakarta">
             </div>
             
             <div class="input-row">
@@ -812,8 +906,13 @@ body::before {
             </div>
         </div>
         
-        <!-- List Data -->
-        <div id="listData"></div>
+        <!-- Info Drag & Drop -->
+        <div class="drag-info">
+            <span>🖱️</span> Drag & Drop untuk mengurutkan data | <span>≡</span> Geser icon untuk memindah
+        </div>
+        
+        <!-- List Data dengan Drag & Drop -->
+        <div id="listData" class="drag-area"></div>
         
         <!-- Total Boxes -->
         <div class="total-section" id="totalBox"></div>
@@ -856,7 +955,7 @@ body::before {
     
     <!-- Footer -->
     <div class="footer">
-        Developed with <span style="color: #ff6b6b;">❤️</span> by <strong>dimsz</strong> • Versi 2.0 Premium
+        Developed with <span style="color: #ff6b6b;">❤️</span> by <strong>dimsz</strong> • Versi 3.0 Drag & Drop
     </div>
 </div>
 
@@ -868,14 +967,14 @@ body::before {
     <div class="popup-content">
         <div class="popup-icon">🚀</div>
         <h2 class="popup-title">Selamat Datang!</h2>
-        <p class="popup-message">Terima kasih telah menggunakan MBG Driver Pro. Aplikasi ini siap membantu pekerjaan Anda!</p>
+        <p class="popup-message">Terima kasih telah menggunakan MBG Driver Pro. Sekarang dengan fitur DRAG & DROP!</p>
         
         <div class="popup-features">
             <p><span class="popup-check">✓</span> Kalkulator porsi sekolah otomatis</p>
-            <p><span class="popup-check">✓</span> Sistem catatan terintegrasi</p>
+            <p><span class="popup-check">✓</span> Drag & Drop untuk mengurutkan data</p>
             <p><span class="popup-check">✓</span> Data tersimpan permanen</p>
             <p><span class="popup-check">✓</span> Desain modern & responsif</p>
-            <p><span class="popup-check">✓</span> Export data ke file</p>
+            <p><span class="popup-check">✓</span> Export data lengkap</p>
         </div>
         
         <button class="btn btn-primary" onclick="tutupWelcomePopup()" style="width: 100%;">Mulai Sekarang</button>
@@ -889,6 +988,7 @@ let data = JSON.parse(localStorage.getItem("mbgData")) || [];
 let catatan = JSON.parse(localStorage.getItem("mbgCatatan")) || [];
 let editIndex = -1;
 let editCatatanIndex = -1;
+let sortableInstance = null;
 
 // Cek first time visit
 window.onload = function() {
@@ -931,11 +1031,61 @@ function switchTab(tab) {
     if(tab === 'kalkulator') {
         document.querySelectorAll('.tab')[0].classList.add('active');
         document.getElementById('tab-kalkulator').classList.add('active');
+        
+        // Re-inisialisasi sortable saat tab kalkulator aktif
+        setTimeout(() => {
+            initSortable();
+        }, 100);
     } else {
         document.querySelectorAll('.tab')[1].classList.add('active');
         document.getElementById('tab-catatan').classList.add('active');
         tampilkanCatatan();
+        
+        // Hancurkan sortable instance saat pindah tab
+        if(sortableInstance) {
+            sortableInstance.destroy();
+            sortableInstance = null;
+        }
     }
+}
+
+// Inisialisasi Drag & Drop
+function initSortable() {
+    const listData = document.getElementById('listData');
+    
+    // Hancurkan instance lama jika ada
+    if(sortableInstance) {
+        sortableInstance.destroy();
+    }
+    
+    // Buat instance Sortable baru
+    sortableInstance = new Sortable(listData, {
+        animation: 250, // Animasi halus
+        ghostClass: 'sortable-ghost', // Class untuk elemen yang "ditinggalkan"
+        dragClass: 'sortable-drag', // Class saat sedang drag
+        handle: '.drag-handle', // Hanya bisa drag dari handle khusus
+        direction: 'vertical', // Hanya vertikal
+        onEnd: function(evt) {
+            // Ini dipanggil setelah drag selesai
+            const oldIndex = evt.oldIndex;
+            const newIndex = evt.newIndex;
+            
+            if(oldIndex !== newIndex) {
+                // Pindahkan data dalam array
+                const movedItem = data.splice(oldIndex, 1)[0];
+                data.splice(newIndex, 0, movedItem);
+                
+                // Simpan ke localStorage
+                localStorage.setItem("mbgData", JSON.stringify(data));
+                
+                // Update tampilan tanpa refresh total
+                updateStats();
+                
+                // Tampilkan notifikasi
+                toast(`Data dipindah dari baris ${oldIndex+1} ke baris ${newIndex+1}`, "success");
+            }
+        }
+    });
 }
 
 // Detail converter
@@ -1003,11 +1153,16 @@ function tampilkan() {
         let dK = detail(item.kecil);
         
         list.innerHTML += `
-        <div class="school-card">
+        <div class="school-card drag-item" data-index="${i}">
             <div class="school-header">
+                <div class="drag-handle" title="Seret untuk memindah">
+                    <span>≡</span>
+                </div>
                 <input type="checkbox" class="school-checkbox pilih" data-index="${i}">
                 <span class="school-name">${item.sekolah}</span>
-                <span class="school-badge">#${i+1}</span>
+                <span class="school-badge">
+                    <span>#${i+1}</span>
+                </span>
             </div>
             
             <div class="portion-grid">
@@ -1056,6 +1211,9 @@ function tampilkan() {
             <span class="total-detail">${dTK.ikat} ikat | ${dTK.sisa} ompreng</span>
         </div>
     `;
+    
+    // Inisialisasi Sortable setelah data ditampilkan
+    initSortable();
 }
 
 // Hitung terpilih
